@@ -11,25 +11,31 @@ Given the sequential nature of data - where sensor readings need to be analy
 
 ### 2. Research Work
 The core of this research focused on creating a highly accurate and privacy-preserving occupancy detection system for smart office environments. The key research question guiding this work was: How to design a highly reliable and privacy-preserving occupancy detection system for a dynamic smart office environment, using ultrasonic sensor integrated with Red Pitaya controller device?
-Scope of Research:
+
+### Scope of Research:
 To address this question, the research focused on integrating labeled sensor data from an ultrasonic sensor integrated with the Red Pitaya controller device, leveraging deep learning techniques. The goal was to ensure  that the system could seamlessly adapt to the dynamic nature of the smart workplaces while preserving occupant privacy and ensuring that the Red Pitaya device could be deployed effectively in such environments.
 
-### 3. Research Objectives
+
+### Research Methodology:
+
+##### *Physical Environment Setup*:
+
+The physical setup involved placing the Red Pitaya equipped ultrasonic sensor in a simulated office space, collecting time-series data on occupant movements. To ensure high data accuracy, to be named as "Auxiliary System" (including the same above-mentioned integrated Ultrasonic sensor with Red Pitaya device along with developed YOLO object detection model) to label the sensor data, classifying it as 'occupant' and 'non-ocuupant'. This labeled data was then used to train an LSTM network, which learned to detect patterns in the data with high accuracy.
+
+![image](https://github.com/user-attachments/assets/0f2cf96e-7c9e-4866-b3d7-18fdd2547353)
+
+    Fig: Occupant Detection Environment Setup
+
+![image](https://github.com/user-attachments/assets/d73e49d6-06ae-4db6-8302-b97ba5a56a86)
+
+    Fig: Non-Occupant Detection Environment Setup 
+
 ##### *Data Collection & Label Extraction:*
-Data Collection: Collected a large dataset using an ultrasonic sensor integrated with Red Pitaya, generating FFT data essential for analyzing occupancy patterns.
-Label Extraction: Used an existing YOLO object detection model to label sensor data as "Occupant" or "Non-occupant," ensuring accurate and reliable training data for the deep learning model.
 
-##### *Developing a Highly Reliable Deep Learning Model (RNN-LSTM):*
-Model Development: Developed an RNN model using LSTM networks to process FFT data and capture temporal dependencies in occupancy patterns.
-Model Integration: Designed the model for seamless future integration into Red Pitaya's software ecosystem for real-time occupancy detection.
-
-##### *Ensuring Privacy:*
-Privacy Focus: Ensured privacy by training the model solely on FFT data, derived from sound signals, while using image data only for label extraction. This approach maintains high accuracy without compromising individual privacy.
-
-### 4. Data Collection and Preparation
-##### *Data Acquisition:*
+*Data Acquisition:*
 Data collection is a crucial phase, a comprehensive dataset was collected utilizing an auxiliary system comprising an ultrasonic sensor integrated with Red Pitaya controller device, supplemented by a webcam-based object detection (YOLO) model to label the data. Over 130,000 labeled samples were collected, categorized into "Occupant Detected" and "Non-Occupant Detected". The data was saved in FFT format, was then labeled and merged into a comprehensive CSV file for model training. 
-##### *Data Processing:*
+
+*Data Processing:*
 The raw ultrasonic data was converted into Fast Fourier Transform (FFT) device format to capture frequency-domain features, which are particularly useful for detecting subtle patterns in occupancy data. These FFT data were merged with the labels derived from the YOLO model, creating a comprehensive dataset in NumPy format, later the labels were extracted from the image folders and were merged with the FFT data and all these information were collected and saved in CSV file. This dataset served as the foundation for training the LSTM model.
 
 Here's a snippet of the code used for data processing:
@@ -57,9 +63,18 @@ def convert_ultrasonic_to_csv(ultrasonic_sensor_folder, output_csv):
     final_dataframe.to_csv(output_csv, index=False)
 ```
 
-The above code snippet demonstrates how the data was processed, including the extraction of labels and conversion of raw ultrasonic data into a structured CSV file format containing labels and frequency levels of each sample taken from the sensor such that the file is ready for model training.
+##### *Developing a Highly Reliable Deep Learning Model (RNN-LSTM):*
+Model Development: Developed an RNN model using LSTM networks to process FFT data and capture temporal dependencies in occupancy patterns.
+Model Integration: Designed the model for seamless future integration into Red Pitaya's software ecosystem for real-time occupancy detection.
+
+##### *Ensuring Privacy:*
+Privacy Focus: Ensured privacy by training the model solely on FFT data, derived from sound signals, while using image data only for label extraction. This approach maintains high accuracy without compromising individual privacy.
 
 ### 5. Why LSTM for Occupancy Detection?
+
+![LSTM1](https://github.com/user-attachments/assets/2265e4ac-6840-4705-9df4-eff2663a5a50)
+
+Fig: LSTM Neural Network Layout [[Source]](https://medium.com/@pradnyakokil24/fruit-and-vegetable-identification-system-using-efficient-convolutional-neural-networks-for-146f1fe7c139)
 
 ##### *Sequential Data Handling:*
 LSTM networks are particularly well-suited for this project because they are designed to handle sequential data, making them suitable for time-series analysis, such as continuous stream of sensor readings in occupancy detection.
@@ -71,33 +86,42 @@ LSTMs overcome the limitations of traditional RNNs by using a gating mechanism, 
 ##### *Initial Experiments:*
 A series of experiments were conducted to determine the optimal LSTM architecture for the occupancy detection model. These experiments varied -the number of hidden layers (LSTM layers) and their configurations to identify the best-performing model in terms of accuracy, training time, and computational efficiency. 
 
-*Experiment 1:*
-- Configuration: Two LSTM layers, each with 64 units.
-- Optimizer: Adam with a learning rate of 0.0001.
+__Experiment 1:__
+- Configuration: 2 LSTM layers (64, 64 units)
+- Optimizer: Adam with lr = 0.0001
 
-*Results:*
-- Test Accuracy: 97.54%
-- Test Loss: 0.0795
-- F1 Score: 0.9772
-- Training Time: ~3 hours
+| Parameters | Values | 
+| --- | --- |
+| Test Accuracy | 97.54% |
+| Test Loss | 0.0795 |
+| F1 Score | 0.9772 |
+| Training Time | ~3 hours |
 
-Observation: This configuration achieved good accuracy but showed potential for improvement in loss and precision.
-Experiment 2:
-Configuration: Three LSTM layers, each with 64 units.
-Optimizer: Adam with a learning rate of 0.001.
-Results:
-Test Accuracy: 98.08%
-Test Loss: 0.0650
-F1 Score: 0.9822
-Training Time: ~5.6 hours
+__Observation__: This configuration achieved good accuracy but showed potential for improvement in loss and precision.
 
-Observation: This experiment yielded the best balance between accuracy, loss, and training time, indicating that three layers of 64 units each were optimal for this task.
-Experiment 3: 
-Configuration: Four LSTM layers, starting with 128 units, followed by three layers of 64 units.
-Optimizer: Adam with a learning rate of 0.001.
-Results:
-Test Accuracy: 97.65%
-Test Loss: 0.0755
-F1 Score: 0.9781
-Training Time: ~6.7 hours
-Observation: While the model was still accurate, it did not significantly outperform the three-layer model and required more training time, making it less efficient.
+__Experiment 2:__
+- Configuration: 3 LSTM layers (64, 64, 64 units)
+- Optimizer: Adam with lr = 0.001
+
+| Parameters | Values | 
+| --- | --- |
+| Test Accuracy | 98.08% |
+| Test Loss | 0.0650 |
+| F1 Score | 0.9822 |
+| Training Time | ~5.6 hours |
+
+__Observation__: This experiment yielded the best balance between accuracy, loss, and training time, indicating that three layers of 64 units each were optimal for this task.
+
+__Experiment 3:__
+- Configuration: 4 LSTM layers (128, 64, 64, 64 units)
+- Optimizer: Adam with lr = 0.001
+
+| Parameters | Values | 
+| --- | --- |
+| Test Accuracy | 97.65% |
+| Test Loss | 0.0755 |
+| F1 Score | 0.9781 |
+| Training Time | ~6.7 hours |
+
+__Observation__: While the model was still accurate, it did not significantly outperform the three-layer model and required more training time, making it less efficient.
+
