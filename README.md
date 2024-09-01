@@ -125,3 +125,12 @@ __Experiment 3:__
 
 __Observation__: While the model was still accurate, it did not significantly outperform the three-layer model and required more training time, making it less efficient.
 
+
+### 6. Decision to Use 3 LSTM Layers of 64 Units
+
+##### *Performance Optimization:*
+
+Based on the experimental results, the three-layer LSTM model with 64 units in each layer was selected. This configuration provided the best balance between accuracy, computational efficiency, and model complexity. The model achieved a high test accuracy of 98.08% with minimal loss and a strong F1 score, which are critical for ensuring reliable occupancy detection.
+
+##### *Choice of Adam Optimizer:*
+The Adam optimizer was chosen for its adaptive learning rate and efficiency in handling sparse gradients, which are common in occupancy detection tasks where the difference between occupied and unoccupied states can be subtle. The learning rate of 0.001 was found to be optimal during your experiments, providing a good trade-off between convergence speed and model performance.
