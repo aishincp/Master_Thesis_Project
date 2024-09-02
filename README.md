@@ -176,6 +176,7 @@ history = rnn_lstm_model.fit(X_fft_train.reshape(X_fft_train.shape[0], X_fft_tra
                              epochs=50, batch_size=32, validation_data=(X_fft_test.reshape(X_fft_test.shape[0], 
                             X_fft_test.shape[1], 1), y_fft_test), callbacks=[early_stopping, checkpoint])
 ```
+The whole code is avialable here : [__See Here__](https://github.com/aishincp/Master_Thesis_Project/blob/main/Code/Thesis_OccupancyDetection_LSTM_Model.ipynb)
 
 #### *Model Selection Experiments:*
 A series of experiments were conducted to determine the optimal LSTM architecture for the occupancy detection model. These experiments varied -the number of hidden layers (LSTM layers) and their configurations to identify the best-performing model in terms of accuracy, training time, and computational efficiency. 
@@ -250,6 +251,4 @@ rnn_lstm_model.load_weights('best_rnn_lstm_model.weights.h5')
 # Save the model with weights in Keras TensorFlow format
 tf.keras.models.save_model(rnn_lstm_model, 'rnn_lstm_model.keras')
 ```
-![image](https://github.com/user-attachments/assets/0278572f-f38e-4ac6-9582-45974eb0ebcf)
-
-     Fig: Saved LSTM Model
+__Saved Model__ [See Here](https://github.com/aishincp/Master_Thesis_Project/tree/main/Code)
